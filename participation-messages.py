@@ -140,7 +140,7 @@ def main():
     if not (key in valid_inputs):
         sys.exit('User input invalid, try again.\n')
     elif key == 'y' or key == 'yes':
-        # TODO: send_all_messages()
+        send_all_messages()
         print('\n\nAll messages sent successfully.\n\n')
     else:
         sys.exit('\n\nExiting without sending messages.\n\n')
