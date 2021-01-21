@@ -24,7 +24,7 @@ categories = []
 #-----------------------------------------------------------------------------------#
 
 # Format point category names
-def create_categories(category_list):
+def format_categories(category_list):
     new_categories = []
     for category in category_list:
         if (category.endswith(' (1)')):
@@ -53,7 +53,7 @@ def create_class_data():
             sys.exit('Exiting: Unable to read csv file {} at line {}: {}'.format(filename, reader.line_num, ex))
         else:
             global categories
-            categories = create_categories(class_data[0])
+            categories = format_categories(class_data[0])
             del class_data[0]
             class_data = sorted(class_data, key = itemgetter(0)) # Sort students alphabetically
 
@@ -118,7 +118,7 @@ def send_all_messages():
             send_message(user, student_index)
             student_index += 1
         except:
-            print('There was an user sending a message for this student at index {}.'.format(student_index))
+            sys.exit('There was an error sending a message.\n')
             pass
 
 def print_all_messages():
