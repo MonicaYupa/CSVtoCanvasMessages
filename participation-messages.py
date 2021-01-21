@@ -4,7 +4,7 @@
 import csv, sys, json, requests, config
 from canvasapi import Canvas
 from operator import itemgetter
-from tests import is_file, test_class_data
+from tests import is_file
 
 #-----------------------------------------------------------------------------------#
 # VARIABLES
@@ -27,8 +27,7 @@ categories = []
 def format_categories(category_list):
     new_categories = []
     for category in category_list:
-        if (category.endswith(' (1)')):
-            category = category.strip(' (1)')
+        category = category.strip(' (1)')
         if (category == 'Participation'):
             category = 'Participation (chat, microphone, or small group)'
         new_categories.append(category)
@@ -57,13 +56,14 @@ def create_class_data():
             del class_data[0]
             class_data = sorted(class_data, key = itemgetter(0)) # Sort students alphabetically
 
+# Message functions
 def message_intro(first_name, point_total):
     return 'Hi ' + first_name + ',\n\nThis week you earned a total of ' + point_total + ' in-class participation point(s). '
 
 def message_categories(student_data, data_length):
     m = 'Here are the categories you earned points for: \n\n'
     for i in range(data_length):
-        if i == 0 or i == data_length - 1:
+        if i == 0 or i == data_length - 1: # skip over student name and total points
             continue
         if student_data[i] != '':
             m += categories[i]
@@ -74,25 +74,23 @@ def message_categories(student_data, data_length):
     return m
 
 def message_no_participation():
-    m = '\n\nPlease reach out to me if you need help feeling comfortable participating in class. You bring a valuable perspective to our learning community and participation is important for your own learning.\n\n'
+    m = '\n\nPlease reach out to me if you need help feeling comfortable participating in class. You bring a valuable perspective to our learning community, and participation is an important part of learning.\n\n'
     m += 'On the participation reflection homework for this week, please write a participation goal that you would like to work on for next week.\n\n'
     return m
 
 # Create a new Canvas message for a specific user
 def create_message(index):
     student_data = class_data[index]
-    first_name = student_data[0].split(' ')[0]
     data_length = len(student_data)
-    point_total = student_data[data_length - 1]
+    first_name = student_data[0].split(' ')[0]
+    point_total = int(student_data[data_length - 1])
 
     # Build out Canvas message
     message = message_intro(first_name, point_total)
-    if (int(point_total) > 0):
+    if (point_total > 0):
         message += message_categories(student_data, data_length)
-
-        if (int(point_total) > 4):
+        if (point_total > 4):
             message += 'Keep up the great work!\n\n'
-
     else: # If students did not participate
         message += message_no_participation()
     
@@ -110,7 +108,7 @@ def send_message(user, student_index):
         context_code = config.COURSE_CONTEXT_CODE
     )
 
-# Send a message to every student
+# Send a message to all students in Canvas course
 def send_all_messages():
     student_index = 0
     for user in users:
@@ -120,6 +118,7 @@ def send_all_messages():
         except:
             sys.exit('There was an error sending a message.\n')
 
+# Preview messages that will be sent
 def print_all_messages():
     student_index = 0
     for user in users:
