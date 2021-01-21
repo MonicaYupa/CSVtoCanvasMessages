@@ -119,7 +119,6 @@ def send_all_messages():
             student_index += 1
         except:
             sys.exit('There was an error sending a message.\n')
-            pass
 
 def print_all_messages():
     student_index = 0
