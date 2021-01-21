@@ -83,13 +83,13 @@ def create_message(index):
     student_data = class_data[index]
     data_length = len(student_data)
     first_name = student_data[0].split(' ')[0]
-    point_total = int(student_data[data_length - 1])
+    point_total = student_data[data_length - 1]
 
     # Build out Canvas message
     message = message_intro(first_name, point_total)
-    if (point_total > 0):
+    if (int(point_total) > 0):
         message += message_categories(student_data, data_length)
-        if (point_total > 4):
+        if (int(point_total) > 4):
             message += 'Keep up the great work!\n\n'
     else: # If students did not participate
         message += message_no_participation()
